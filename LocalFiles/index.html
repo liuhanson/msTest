@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<!--
+* @file index.html
+*
+* Template application that provides Native UI functionality in
+* HTML5 and JavaScript.
+-->
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<script type="text/javascript" charset="utf-8" src="js/wormhole.js"></script>
+	<script type="text/javascript">
+		/**
+		 * Called by the NativeUI library when the UI is ready to
+		 * be shown. Show the main screen here.
+		 *
+		 * Here we illustrate how to add events to widgets and how to
+		 * create widgets from JavaScript code.
+		 */
+		mosync.nativeui.UIReady = function()
+		{
+			// First get the screen we want to show.
+			var mainScreen = document.getNativeElementById("mainScreen");
+
+			// Show the screen.
+			mainScreen.show();
+
+			// Get an instacne of the vibrate button created in the markup.
+			var vibrateButton = document.getNativeElementById("vibrateButton");
+
+			// Add an event listener to it. This is an alternative to
+			// specify a function name in the markup.
+			vibrateButton.addEventListener("Clicked", function()
+			{
+				navigator.notification.vibrate(1000);
+			});
+
+			// Create a button in JavaScript.
+			var helloButton = mosync.nativeui.create("Button", "helloButton",
+			{
+				// Declarative way of setting properties.
+				"width": "FILL_AVAILABLE_SPACE",
+				"text": "Say Hello"
+			});
+
+			// Here is how to set properties in code.
+			helloButton.setProperty("fontSize", "20");
+
+			// Setting the clicked function.
+			helloButton.addEventListener("Clicked", function()
+			{
+				helloButton.setProperty("text",  "Hello World!");
+			});
+
+			// Add button to layout.
+			helloButton.addTo("mainLayout");
+		}
+
+		/**
+		 * Number of clicks on counterButton.
+		 */
+		var clickCounter = 0;
+
+		/**
+		 * Called when counterButton is clicked.
+		 */
+		function counterButtonClicked()
+		{
+			var label = document.getNativeElementById("textLabel");
+			++clickCounter;
+			label.setProperty("text", "No. of clicks: " + clickCounter);
+		}
+
+		// Register event listeners.
+
+		// The "deviceready" event is sent when the system
+		// has finished loading. Here we initialise the UI.
+		document.addEventListener(
+			"deviceready",
+			function()
+			{
+				// Will call mosync.nativeui.UIReady when
+				// all Native UI widgets have been created.
+				mosync.nativeui.initUI();
+			},
+			true);
+
+		// Close the application when the back key is pressed.
+		document.addEventListener(
+			"backbutton",
+			function()
+			{
+				mosync.app.exit();
+			},
+			true);
+	</script>
+</head>
+
+<body>
+	<!-- All of the mosync.nativeui widgets should be wrapped inside a
+		tag with id="NativeUI" -->
+	<div id="NativeUI">
+		<!-- The element with id="mainScreen" contains the main UI screen.
+			In this app the main screen has two tabs with screens. -->
+		<div data-widgetType="TabScreen" id="mainScreen">
+			<!-- First Screen -->
+			<div data-widgetType="Screen"
+				id="widgetScreen"
+				data-title="Widgets"
+				data-icon_android="img/Android_TabIconDevice.png"
+				data-icon_iOS="img/IOS_TabIconDevice.png">
+				<div data-widgetType="VerticalLayout"
+					id="mainLayout"
+					data-width="FILL_AVAILABLE_SPACE"
+					data-height="FILL_AVAILABLE_SPACE">
+					<div widgetType="Label"
+						id="textLabel"
+						data-width="FILL_AVAILABLE_SPACE"
+						data-text="Native UI in JavaScript"
+						data-fontSize="26">
+					</div>
+					<div data-widgetType="Button"
+						id="counterButton"
+						data-width="FILL_AVAILABLE_SPACE"
+						data-text="Click Me!"
+						data-fontSize="20"
+						data-onevent="counterButtonClicked()">
+					</div>
+					<div data-widgetType="Button"
+						id="vibrateButton"
+						data-width="FILL_AVAILABLE_SPACE"
+						data-text="Vibrate"
+						data-fontSize="20">
+					</div>
+				</div>
+			</div>
+			<!-- Second Screen -->
+			<div data-widgetType="Screen"
+				data-id="webScreen"
+				data-title="Web"
+				data-icon_android="img/Android_TabIconWebView.png"
+				data-icon_iOS="img/IOS_TabIconWebView.png">
+				<div data-widgetType="WebView"
+					id="webBrowser"
+					data-width="FILL_AVAILABLE_SPACE"
+					data-height="FILL_AVAILABLE_SPACE"
+					data-url="http://www.google.com">
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
